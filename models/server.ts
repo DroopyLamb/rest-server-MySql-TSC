@@ -1,22 +1,35 @@
 import express, { Application } from 'express';
 import userRoutes from '../routes/usuario';
 import cors from 'cors';
+import db from '../db/connection';
+
 class Server {
 
     private app: Application;
     private port: string;
 
+    // Paths de las rutas
+    private apiPaths = {
+        usuarios: '/api/usuarios'
+    }
+
     constructor() {
         this.app = express();
         this.port = process.env.PORT || '8000';
         // Métodos iniciales
+        this.dbConnection();
         this.middlewares();
         this.routes();
     }
 
-    // Paths de las rutas
-    private apiPaths = {
-        usuarios: '/api/usuarios'
+    async dbConnection (){
+        try {
+            await db.authenticate();
+            console.log('Database Online');
+
+        } catch (error) {
+            throw new Error (error);
+        }
     }
 
     middlewares() {
